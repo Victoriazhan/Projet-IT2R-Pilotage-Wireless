@@ -1,0 +1,16 @@
+--cpu Cortex-M3
+".\objects\basei2c.o"
+".\objects\glcd_fonts.o"
+".\objects\glcd_mcb1700.o"
+".\objects\i2c_lpc17xx.o"
+".\objects\ssp_lpc17xx.o"
+".\objects\uart_lpc17xx.o"
+".\objects\gpdma_lpc17xx.o"
+".\objects\gpio_lpc17xx.o"
+".\objects\pin_lpc17xx.o"
+".\objects\startup_lpc17xx.o"
+".\objects\system_lpc17xx.o"
+--strict --scatter ".\Objects\main_project.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\main_project.map" -o .\Objects\main_project.axf
