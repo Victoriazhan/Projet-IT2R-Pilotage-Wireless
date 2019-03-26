@@ -1,0 +1,3 @@
+https://bootlin.com/labs/doc/nunchuk.pdf			doc soft
+https://www.robotshop.com/media/files/PDF/inex-zx-nunchuck-datasheet.pdf	doc complete
+http://www.dejazzer.com/ee379/labs/lab4_can_i2c.pdf				sample utilisation
