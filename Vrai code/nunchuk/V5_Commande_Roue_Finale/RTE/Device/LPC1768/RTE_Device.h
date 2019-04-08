@@ -849,7 +849,7 @@
 
 // <e> SSP1 (Synchronous Serial Port 1) [Driver_SPI1]
 // <i> Configuration settings for Driver_SPI1 in component ::Drivers:SPI
-#define RTE_SSP1                        0
+#define RTE_SSP1                        1
 
 //   <h> Pin Configuration
 //     <o> SSP1_SSEL <0=>Not used <1=>P0_6
@@ -885,7 +885,7 @@
 
 //     <o> SSP1_MISO <0=>Not used <1=>P0_8
 //     <i> Master In Slave Out for SSP1
-#define   RTE_SSP1_MISO_PIN_SEL         0
+#define   RTE_SSP1_MISO_PIN_SEL         1
 #if      (RTE_SSP1_MISO_PIN_SEL == 0)
   #define RTE_SSP1_MISO_PIN_EN          0
 #elif    (RTE_SSP1_MISO_PIN_SEL == 1)
@@ -901,7 +901,7 @@
 
 //     <o> SSP1_MOSI <0=>Not used <1=>P0_9
 //     <i> Master Out Slave In for SSP1
-#define   RTE_SSP1_MOSI_PIN_SEL         0
+#define   RTE_SSP1_MOSI_PIN_SEL         1
 #if      (RTE_SSP1_MOSI_PIN_SEL == 0)
   #define RTE_SSP1_MOSI_PIN_EN          0
 #elif    (RTE_SSP1_MOSI_PIN_SEL == 1)

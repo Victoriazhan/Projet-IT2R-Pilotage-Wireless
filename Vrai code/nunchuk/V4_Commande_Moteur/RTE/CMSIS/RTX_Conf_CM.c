@@ -46,14 +46,14 @@
 //   <i> Defines default stack size for threads with osThreadDef stacksz = 0
 //   <i> Default: 200
 #ifndef OS_STKSIZE
- #define OS_STKSIZE     50      // this stack size value is in words
+ #define OS_STKSIZE     200      // this stack size value is in words
 #endif
  
 //   <o>Main Thread stack size [bytes] <64-32768:8><#/4>
 //   <i> Defines stack size for main thread.
 //   <i> Default: 200
 #ifndef OS_MAINSTKSIZE
- #define OS_MAINSTKSIZE 50      // this stack size value is in words
+ #define OS_MAINSTKSIZE 200      // this stack size value is in words
 #endif
  
 //   <o>Number of threads with user-provided stack size <0-250>
@@ -81,7 +81,7 @@
 //   <i> Initialize thread stack with watermark pattern for analyzing stack usage (current/maximum) in System and Thread Viewer.
 //   <i> Enabling this option increases significantly the execution time of osThreadCreate.
 #ifndef OS_STKINIT
-#define OS_STKINIT      0
+#define OS_STKINIT      1
 #endif
  
 //   <o>Processor mode for thread execution 
@@ -108,7 +108,7 @@
 //   <i> When the Cortex-M SysTick timer is used, the input clock 
 //   <i> is on most systems identical with the core clock.
 #ifndef OS_CLOCK
- #define OS_CLOCK       12000000
+ #define OS_CLOCK       10000000
 #endif
  
 //   <o>RTX Timer tick interval value [us] <1-1000000>

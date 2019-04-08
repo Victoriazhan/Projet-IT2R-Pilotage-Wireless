@@ -3,9 +3,6 @@
 #include "cmsis_os.h"                   // ARM::CMSIS:RTOS:Keil RTX
 #include "GPIO.c"
 
-// PWM1 sur Channel 3 
-// la période est réglée par MR0
-// le rapport cyclique est réglé par MR3
 
 int roue_droite (void);
 
@@ -27,21 +24,11 @@ void avance_roue_selon_rapport(int rapport_cyclique);
 void recule_roue_salon_rapport(int rapport_cyclique);
 	
 int main (void)
-{	
-	int rapport_cyclique;
-
-	Initialise_GPIO (); // init GPIO
+{	int rapport_cyclique;
 	
-	LPC_GPIO0->FIODIR=((1<<16)|(1<<17));//P0.16 ,P0.17 mise en sortie
+	rapport_cyclique=tourne_extreme_gauche();
 	
-	// initialisation de timer 1
-		
-	//rapport_cyclique=tourne_extreme_gauche();
-	
-	//direction_roue(rapport_cyclique);
-	
-
-//	LPC_GPIO0->FIOPIN&=~(1<<17); //INB
+	direction_roue(rapport_cyclique);
 	
 	return 0;
 }
@@ -104,7 +91,7 @@ void direction_roue(int rapport_cyclique)
 	                                             // bit 0 = MR0    bit3 = MR3
 	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
 	                                
-  LPC_PWM1->TCR = 1;  /*validation de timer 1 et reset counter */
+  LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter 
 }
 
 void avance_roue(int rapport_cyclique)
@@ -128,7 +115,7 @@ void avance_roue(int rapport_cyclique)
 	                                             // bit 0 = MR0    bit2 = MR2
 	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
 	                                
-  LPC_PWM1->TCR = 1;  /*validation de timer 1 et reset counter */
+  LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter 
 	
 	LPC_GPIO0->FIOPIN|=(1<<17); //INB=1, P0.17 avance
 }
@@ -153,7 +140,7 @@ void recule_roue(int rapport_cyclique)
 	                                             // bit 0 = MR0    bit2 = MR2
 	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
 	                                
-  LPC_PWM1->TCR = 1;  /*validation de timer 1 et reset counter */
+  LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter 
 	
 	LPC_GPIO0->FIOPIN|=(1<<16); //INA=1, P0.16 recule
 }
@@ -179,7 +166,7 @@ void avance_roue_lent(void)
 	                                             // bit 0 = MR0    bit2 = MR2
 	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
 	                                
-  LPC_PWM1->TCR = 1;  /*validation de timer 1 et reset counter */
+  LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter 
 	
 	LPC_GPIO0->FIOPIN|=(1<<17); //INB=1, P0.17 avance
 }
@@ -204,7 +191,7 @@ void avance_roue_vite(void)
 	                                             // bit 0 = MR0    bit2 = MR2
 	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
 	                                
-  LPC_PWM1->TCR = 1;  /*validation de timer 1 et reset counter */
+  LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter 
 	
 	LPC_GPIO0->FIOPIN|=(1<<17); //INB=1, P0.17 avance
 }
@@ -230,7 +217,7 @@ void recule_roue_lent(void)
 	                                             // bit 0 = MR0    bit2 = MR2
 	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
 	                                
-  LPC_PWM1->TCR = 1;  /*validation de timer 1 et reset counter */
+  LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter 
 	
 	LPC_GPIO0->FIOPIN|=(1<<16); //INA=1, P0.16 recule
 }
@@ -255,11 +242,10 @@ void recule_roue_vite(void)
 	                                             // bit 0 = MR0    bit2 = MR2
 	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
 	                                
-  LPC_PWM1->TCR = 1;  /*validation de timer 1 et reset counter */
+  LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter
 	
 	LPC_GPIO0->FIOPIN|=(1<<16); //INA=1, P0.16 recule
 }
-
 
 /*
 	
@@ -292,10 +278,10 @@ LPC_PWM1->MCR = LPC_PWM1->MCR | (1<<1); //RAZ du compteur si correspondance avec
 LPC_PWM1->PCR = LPC_PWM1->PCR | (1<<11); //active PWM3
 LPC_PWM1->TCR = 1; //démarre le comptage du Timer
 return 0 ;
-*/
 
 
-/*	LPC_PWM1->PR = 11;  // prescaler
+
+	LPC_PWM1->PR = 11;  // prescaler
 	
 	// valeur de MR0  + 1 = 100 cela fait 48 us, période de la PWM
   // valeur proche des 20 KHz de la gamelle !
@@ -312,5 +298,4 @@ return 0 ;
 	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
 	                                
   LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter
-	
 	*/
