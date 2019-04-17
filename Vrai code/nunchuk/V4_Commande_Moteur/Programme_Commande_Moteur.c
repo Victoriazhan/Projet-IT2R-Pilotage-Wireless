@@ -22,15 +22,140 @@ void recule_roue_vite(void);
 
 void avance_roue_selon_rapport(int rapport_cyclique);
 void recule_roue_salon_rapport(int rapport_cyclique);
-	
+void fonction_PWM(void);
+	void TIMER0_IRQHandler(void)
+{
+	LPC_TIM1->IR = LPC_TIM1->IR | (1<<0); //baisse le drapeau dû à MR0
+	LPC_GPIO2->FIOPIN = LPC_GPIO2->FIOPIN ^ (1<<0); //inverse l’état de P2.0
+}
+
 int main (void)
-{	int rapport_cyclique;
+{	
+//	Initialise_GPIO ();
+//	GPIO_SetDir (0, 16, 1);
+//	GPIO_SetDir (0, 17, 1);
+//	LPC_GPIO0->FIODIR=((1<<16)|(1<<17));//P0.17 mise en sortie
+//	LPC_GPIO0->FIOPIN&=(0<<16); //INA=0, P0.17 avance	
+//	LPC_GPIO0->FIOPIN|=(1<<17); //INB=1, P0.17 avance	
+//	GPIO_SetDir (0, 16, 1);
+//	GPIO_SetDir (0, 17, 1);
+//	LPC_GPIO0->FIOPIN&=~(1<<16); //INA=0, P0.16
+//	LPC_GPIO0->FIOPIN|=(1<<17); //INA=0, P0.16
+//	
+//	LPC_PWM1->MR2 = 0.3*(1249+1)-1;    // 10% ceci ajuste la duree de l'état haut
+//	fonction_PWM();
+//	
+
+//	LPC_GPIO2->FIODIR = LPC_GPIO2->FIODIR | (1<<0); //P2.0 configuré en sortie
+//	LPC_TIM0->CTCR = 0; //mode Timer (signaux carrés)
+//	LPC_TIM0->PR = 0; //Prescaler à 0
+//	LPC_TIM0->MR0 = 25000000 - 1; //valeur de N
+//	LPC_TIM0->MCR = LPC_TIM0->MCR | (3<<0);
+//	//RAZ du compteur si correspondance avec MR0, et interruption
+//	NVIC_SetPriority(1,0); //TIMER0 : interruption de priorité 0
+//	NVIC_EnableIRQ(1); //active les interruption TIMER0
 	
-	rapport_cyclique=tourne_extreme_gauche();
+//	while(1);
+
+	LPC_SC->PCONP = LPC_SC->PCONP | 0x00000002;   //  enable Timer 0
+
+	// init de timer 0, f=20kHz
 	
-	direction_roue(rapport_cyclique);
+	LPC_TIM0->CTCR = 0;
+	LPC_TIM0->PR = 0;  // à compléter prescaler pour obtenir une référence de 1 us
+	LPC_TIM0->MR0 = 624;    // valeur à compéter pour obtenir une période de comptégae de 50 µs
+	LPC_TIM0->MR1 = 0.1*(624+1)-1; 
 	
+	LPC_TIM0->MCR=LPC_TIM0->MCR|(1<<1); // le compteur est remis à 0 chaque fois qu'il atteint la valeur de MR0 (toutes les 50µs)
+	
+	LPC_PINCON->PINSEL7 = LPC_PINCON->PINSEL7| (2<<18); // P3.25	est la sortie 0 de Timer 0 (MAT0.0) 
+	
+	LPC_TIM0->EMR=0x0030; // Toggle sur MAT0.0 quand le compteur atteint son maximum; 
+	LPC_TIM0->TCR = 1;  //validation de timer 0 et reset counter */
+	
+	LPC_SC->PCONP = LPC_SC->PCONP | 0x00C00000;   //  à compléter enable Timer 0,1,2,3 et PWM1
+	LPC_TIM1->CTCR = 0;
+	LPC_TIM1->PR = 0;  // à compléter prescaler pour obtenir une référence de 1 us
+	LPC_TIM1->MR0 = 0.1*(624+1)-1;    // valeur à compéter pour obtenir une période de 10% de 50 µs
+	
+	LPC_TIM1->MCR|=(1<<0); // Interruption dès que le compteur atteint la valeur de MR0 (toutes les 10% de 50µs)
+	
+	NVIC_SetPriority(TIMER1_IRQn,3); //TIMER1 : interruption de priorité 3
+	NVIC_EnableIRQ(TIMER1_IRQn); //active les interruption TIMER1
+	
+	LPC_TIM0->EMR=0x0030; // Toggle sur MAT0.0 quand le compteur atteint son maximum; 
+	LPC_TIM0->TCR = 1;  //validation de timer 0 et reset counter */
+	
+	
+	
+	
+//	int etat =0;
+//	while (1)
+//	{
+//		if (etat==0)
+//		{
+//			LPC_SC->PCONP = LPC_SC->PCONP | 0x00000002;   //  enable Timer 0
+
+//			// init de timer 0, f=20kHz
+//			
+//			LPC_TIM0->CTCR = 0;
+//			LPC_TIM0->PR = 0;  // à compléter prescaler pour obtenir une référence de 1 us
+//			LPC_TIM0->MR0 = 624;    // valeur à compéter pour obtenir une période de comptégae de 50 µs
+//			
+//			LPC_TIM0->MCR=LPC_TIM0->MCR|(1<<1); // le compteur est remis à 0 chaque fois qu'il atteint la valeur de MR0 (toutes les 50µs)
+//			
+//			
+//			LPC_PINCON->PINSEL7 = LPC_PINCON->PINSEL7| (2<<18); // P3.25	est la sortie 0 de Timer 0 (MAT0.0) 
+//			
+//			
+//			LPC_TIM0->EMR=0x0030; // Toggle sur MAT0.0 quand le compteur atteint son maximum; 
+//			LPC_TIM0->TCR = 1;  //validation de timer 0 et reset counter */
+//			etat=1;
+//		}
+//		else
+//		{
+//			LPC_SC->PCONP = LPC_SC->PCONP | 0x00000002;   //  enable Timer 0
+
+//			// init de timer 0, f=20kHz
+//			
+//			LPC_TIM0->CTCR = 0;
+//			LPC_TIM0->PR = 0;  // à compléter prescaler pour obtenir une référence de 1 us
+//			LPC_TIM0->MR0 = 600;    // valeur à compéter pour obtenir une période de comptégae de 50 µs
+//			
+//			LPC_TIM0->MCR=LPC_TIM0->MCR|(1<<1); // le compteur est remis à 0 chaque fois qu'il atteint la valeur de MR0 (toutes les 50µs)
+//			
+//			
+//			LPC_PINCON->PINSEL7 = LPC_PINCON->PINSEL7| (2<<18); // P3.25	est la sortie 0 de Timer 0 (MAT0.0) 
+//			
+//			
+//			LPC_TIM0->EMR=0x0030; // Toggle sur MAT0.0 quand le compteur atteint son maximum
+//			LPC_TIM0->TCR = 1;  //validation de timer 0 et reset counter */
+//			etat=0;
+//		}
+//	}
 	return 0;
+}
+
+void fonction_PWM(void)
+{
+	LPC_SC->PCONP = LPC_SC->PCONP | 0x00000040;   // enable PWM1
+				
+	// prescaler+1 = 1 	
+	LPC_PWM1->PR = 0;  // prescaler
+				
+	// valeur de 20KHz
+	// ceci permet de régler facilement le rapport cyclique entre 1 et 100	
+
+	LPC_PWM1->MR0 = 1249;    // Ceci ajuste la période de la PWM à 50 µs
+	
+	LPC_PINCON->PINSEL7 = LPC_PINCON->PINSEL7 | (3<<18); //  P3.25 est la sortie PWM Channel 2 de Timer 1
+	
+	LPC_PWM1->MCR = LPC_PWM1->MCR | 0x00000002; // Timer relancé quand MR0 repasse à 0
+	LPC_PWM1->LER = LPC_PWM1->LER | 0x00000005;  // ceci donne le droit de modifier dynamiquement la valeur du rapport cyclique
+																							 // bit 0 = MR0    bit2 = MR2
+	LPC_PWM1->PCR = LPC_PWM1->PCR | 0x00000e00;  // autorise la sortie PWM
+																	
+	LPC_PWM1->TCR = 1;  //validation de timer 1 et reset counter 
 }
 
 int roue_droite()
@@ -157,7 +282,7 @@ void avance_roue_lent(void)
 
   LPC_PWM1->MR0 = 1249;    // Ceci ajuste la période de la PWM à 50 µs
 	
-	LPC_PWM1->MR2 = 0.2*(1249+1)-1;    // 50% ceci ajuste la duree de l'état haut
+	LPC_PWM1->MR2 = 0.3*(1249+1)-1;    // 50% ceci ajuste la duree de l'état haut
 	
 	LPC_PINCON->PINSEL7 = LPC_PINCON->PINSEL7 | (3<<18); //  P3.25 est la sortie PWM Channel 2 de Timer 1
 	
